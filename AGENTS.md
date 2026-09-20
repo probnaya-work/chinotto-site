@@ -1,224 +1,114 @@
-# AGENTS.md
+# AGENTS.md — working context for the Chinotto website
 
-## Project
+Chinotto is an instrument of PROBNAYA, an independent computational laboratory. PROBNAYA is the
+maker and the repository owner; Chinotto keeps its own product identity, and laboratory-wide
+repository conventions are recorded in `probnaya-work/.github` (`PROBNAYA.md`).
 
-Chinotto Site is the marketing website for Chinotto — a minimal local-first desktop thinking tool.
+This repository is the website only. It is not the desktop app, not a web version of the product,
+and not a CMS.
 
-This repo is for the website only.
+## Commit convention
 
-It is not:
-- the desktop app
-- a web app version of the product
-- a dashboard
-- a CMS-driven content platform
-- a backend service
+`type(scope): imperative subject`, optional body. Types: `feat` | `fix` | `refactor` | `perf` |
+`chore` | `docs` | `style` | `test` (`ci` is not used here — use `chore`). One logical change per
+commit; if the subject needs “and”, split it. Imperative and present tense, lowercase after the
+colon, no trailing period, ~72 chars. No vague subjects (“fix bug”, “update stuff”) and no filler
+(“WIP”, “quick”, “small”, “hopefully”). Scope only when it locates the change (`landing`, `og`,
+`share`, `icons`). The full version, with granularity rules and examples, is
+[`docs/commit-convention.md`](docs/commit-convention.md).
 
-## Core goal
+---
 
-Build and maintain a fast, minimal, elegant static landing page that explains the product clearly and supports app download.
+## Architecture
 
-## Tech stack
+A static multi-page Vite build. One HTML file per route, one stylesheet, one TypeScript module.
 
-- **Vite** — build tool and dev server
-- **React 18** — UI
-- **React Router** — client-side routes for landing and content pages
-- **Tailwind CSS v4** — styling (`@tailwindcss/vite`)
-- **Static build** — `pnpm build` → static output, deployable anywhere
-- **Vercel-friendly** — static export + `vercel.json` rewrites for SPA routes
-- **Share hosting** — Vercel serverless routes under `api/` on `getchinotto.app` (see `docs/share-hosting.md`); uses Upstash Redis in production
-- **Minimal JavaScript** — landing and content pages are mostly static; no app shell required
-- **No CMS** — no content API or admin
+```
+index.html      the record (landing)
+manifesto.html  content page
+privacy.html    content page
+404.html        not found
+src/styles.css  every style on the site
+src/record.ts   the only client behaviour
+api/            Vercel serverless functions for share hosting — unrelated to the pages
+```
 
-We do **not** use Astro or another meta-framework. The current stack (Vite + React + React Router) is sufficient for the site.
+There is no framework, no client router, no runtime dependency and no build-time CSS toolchain.
+`dependencies` exist only because `api/` needs them at runtime on Vercel.
 
-The repo contains many Radix/shadcn-style UI components; the landing and content pages deliberately use almost none of them. Prefer simple markup and Tailwind for the site.
+**Adding a route means adding an HTML file and registering it in `vite.config.ts`
+`build.rollupOptions.input`.** A file that is not registered is not built.
 
-### Routes
+## Invariants
 
-- `/` — landing
-- `/showcase` — logo showcase (dev/design)
-- `/privacy` — privacy policy (content page)
-- `/manifesto` — manifesto (content page)
-- `/changelog` — Updates (product changelog; title in UI is “Updates”; aliases `/notes`, `/updates`)
+These break production if changed carelessly. Verify before touching them.
 
-Content pages use `ContentPageLayout` (shared header/footer, main content area). Footer links point to these paths; production needs rewrites so these URLs serve `index.html` (see `vercel.json`).
+- **`/t/{token}` must keep resolving.** The desktop app publishes share snapshots to
+  `POST /api/threads` and hands people `getchinotto.app/t/{token}`. Live links already exist. See
+  [`docs/share-hosting.md`](docs/share-hosting.md).
+- **`/sync` must return 200.** The desktop app renders `https://getchinotto.app/sync?ds=<uuid>` as a
+  pairing QR code. On iOS the universal link opens the app; everyone else lands on this site, so the
+  `vercel.json` rewrite to `/` is the fallback and must stay.
+- **`public/.well-known/apple-app-site-association` must be served as `application/json`** for those
+  universal links to resolve. The `vercel.json` header does that.
+- **`/privacy` and `/manifesto` are published URLs.** They are in `sitemap.xml`, linked from the site
+  footer, and `/privacy` is the canonical policy URL referenced by the apps' store listings.
 
-## Product framing
+## The record
 
-Chinotto is a desktop-first thinking tool for quickly capturing thoughts and recovering context later.
+The landing page shows one real specimen: a moment left on **27 mar 2026 · 18:12** and carried over
+on **30 mar 2026 · 13:29**. Both fragments are maintainer-set text. Do not correct, translate or
+normalise either of them — the Russian line reads the way it reads on purpose.
 
-The product philosophy:
-- Capture first
-- Structure later
-- Local-first
-- No workspace overhead
+`src/record.ts` computes every elapsed value from those timestamps against the local calendar. None
+of it is decorative — do not replace a computed interval with a fixed string.
 
-It is not a generic note-taking SaaS.
-It is not a task manager.
-It is not a collaborative workspace.
-It is not "organize your life" software.
+`continue` appends exactly one moment dated now and then removes itself. The two carried-over
+moments never move; that is the point the page makes.
 
-## Design principles
+## Typography
 
-- Minimal
-- Calm
-- Geometric
-- Strong typography
-- Spacious layout
-- Premium but restrained
-- Personal, not corporate
-- Desktop-native feeling
-- No loud startup aesthetics
-- No generic SaaS gradients unless explicitly requested
+Archivo (variable, `wght` 400–600 and `wdth` 90–100) and Geist Mono 400, self-hosted under
+`public/fonts/` and preloaded. The axis ranges are instanced down to what the design uses, which is
+why the files are 39 KB and 10 KB rather than 176 KB.
 
-## Engineering principles
+**Archivo carries no Cyrillic.** The Russian specimen renders in `Archivo Fallback` — a `local()`
+face with `size-adjust` and ascent/descent overrides that hold Archivo's line box so the fall-through
+costs no layout shift. If you add copy outside Latin-1, check it in a browser.
 
-- **Marketing site = one JS bundle, no route-level `lazy`/`Suspense` fallbacks** — full reloads are avoided with `<Link>`; avoid async route chunks that flash an empty screen.
-- **One responsive branch in the tree** — do not mount both `md:` and mobile layouts hidden with CSS; use a `matchMedia` hook (`useMinMd`) so only the active layout runs (fewer effects, no duplicate `FloatingBlobs` / mockup work).
-- Prefer static pages and static content
-- Prefer simple React components and clear JSX over heavy abstraction
-- Add client-side JavaScript only when clearly necessary
-- Keep dependencies minimal for the landing (do not pull in unused libs for the site)
-- Avoid overengineering
-- Favor readability over cleverness
-- Keep component boundaries simple
-- Build reusable sections only when they are actually reused
-- Avoid premature abstraction
+Sizes scale with `cqw` against `.sheet`, which is the query container. `.sheet`'s own padding uses
+`svw` because an element is not its own container.
 
-## What to optimize for
+## Generated assets
 
-- fast load
-- simple structure
-- clean semantic HTML
-- maintainable code
-- restrained copy
-- polished visual hierarchy
-- responsive layout
-- easy expansion; static content pages already in place:
-  - /privacy, /manifesto (see **Routes** in Tech stack)
+Both are committed; regenerate them when the mark or the record changes.
+
+```bash
+pnpm icons      # favicons, apple-touch-icon and favicon.ico from the mark — no dependencies
+pnpm dev        # in another shell, then:
+node scripts/og.mjs   # public/og-image.png, captured from scripts/og-template.html
+```
+
+`scripts/og-template.html` borrows `src/styles.css` so the share card cannot drift from the page. It
+is not a build input, so it never ships.
+
+## Verification
+
+```bash
+pnpm build          # must stay under ~10 kB of CSS and ~4 kB of JS
+pnpm typecheck      # site
+pnpm typecheck:api  # api/
+pnpm test:share     # api/lib
+```
+
+The site has no test suite; it is small enough that the check is a browser. When changing layout,
+look at 375px and 1440px and confirm `document.documentElement.scrollWidth` equals `clientWidth`.
 
 ## What to avoid
 
-- unnecessary React islands or client-side hydration for static content
-- animation-heavy UI
-- complex state management
-- design system overkill
-- fake testimonials
-- pricing section
-- newsletter forms by default
-- SEO cargo cult
-- generic startup buzzwords
-- excessive copy
-- unnecessary package additions
-
-## Copy style
-
-Write copy that is:
-- short
-- intelligent
-- understated
-- clear
-- non-hype
-- non-corporate
-
-Avoid phrases like:
-- supercharge your productivity
-- revolutionize your workflow
-- seamless collaboration
-- all-in-one workspace
-- organize your life
-- unlock your potential
-
-## Changelog writing (Updates / `/changelog`)
-
-Chinotto uses a minimal, calm, and structured changelog style. All updates in `src/app/content/updates.ts` must follow these rules.
-
-### Format
-
-Each release must follow:
-
-```
-vX.Y.Z
-
-Title (1 short line)
-
-* bullet
-* bullet
-* bullet
-
-(optional note — one short sentence, separate styling on the page; for factual asides that don’t fit bullets, e.g. minimum app version for updates)
-```
-
-### Title
-
-- **3–5 words**
-- Describes the change in a calm, product-oriented way
-
-**Good:** Quick capture is here · Search feels instant
-
-**Bad:** Added new feature for capturing thoughts
-
-### Bullet points
-
-Use **noun-based, short phrases**:
-
-- Thought capture
-- Full-text search
-- Pin thoughts
-- UI polish
-
-### Constraints
-
-- **3–5** bullet points per release
-- Each bullet: **2–4 words** (shortcut glyphs like `⌘ ⇧ K` are allowed when needed)
-- **No sentences**
-- **No punctuation** at the end of bullets
-
-### Do NOT use
-
-- “Added”, “Improved”, “Fixed”
-- “You can now…”
-- Technical implementation details
-- Long descriptions
-
-### Include only
-
-- New core capabilities
-- Meaningful UX improvements
-- Visible product changes
-
-### Exclude
-
-- Minor fixes
-- Internal refactors
-- Non-user-facing changes
-
-### Tone
-
-- Calm
-- Minimal
-- Product-focused
-- No marketing language
-- No poetic language
-
-**Goal:** Changelog should be instantly scannable and feel like part of the product — clean, precise, and consistent.
-
-## Expected behavior from coding agents
-
-When making changes:
-1. preserve minimalism
-2. do not introduce complexity without reason
-3. explain tradeoffs briefly
-4. prefer editing existing simple structure over inventing abstractions
-5. keep the site coherent with the Chinotto brand
-6. if a feature feels like marketing fluff, challenge it
-7. if a dependency is avoidable, avoid it
-8. when editing Updates / changelog data (`src/app/content/updates.ts`), follow **Changelog writing** above
-
-## Output expectations
-
-When proposing implementation:
-- start with the simplest viable approach
-- keep explanations concise
-- mention any tradeoff or risk directly
-- do not produce giant speculative architectures
+- Adding a framework, a CSS toolchain, a component library or a client router.
+- Adding a runtime dependency to the pages. `dependencies` are for `api/` only.
+- Inventing product copy. Claims must be supported by the shipped apps — Chinotto runs on macOS and
+  iOS; **Android is built but not released**, and the footer says so rather than linking a store.
+- Marketing sections, pricing, testimonials, newsletter forms.
+- Blocking scripts, web fonts from a third-party origin, or anything that shifts layout on load.
