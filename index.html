@@ -1,51 +1,138 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chinotto — personal thought that keeps going</title>
-    <meta name="description" content="Capture unfinished thoughts. Pick the thread back up later — local-first, no account." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#141416" />
+
+    <title>Chinotto — a private record of thoughts, encounters, and what continues between them</title>
+    <meta
+      name="description"
+      content="Nothing is filed. A moment keeps its date; continuing it adds another, dated now. What is further away grows quieter, and comes back only when there is a reason to."
+    />
     <link rel="canonical" href="https://getchinotto.app/" />
 
-    <meta property="og:title" content="Chinotto — personal thought that keeps going" />
-    <meta property="og:description" content="Capture unfinished thoughts. Pick the thread back up later — local-first, no account." />
+    <meta property="og:site_name" content="Chinotto" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://getchinotto.app/" />
+    <meta property="og:title" content="Chinotto" />
+    <meta
+      property="og:description"
+      content="A private record of thoughts, encounters, and what continues between them."
+    />
     <meta property="og:image" content="https://getchinotto.app/og-image.png" />
-    <meta property="og:image:url" content="https://getchinotto.app/og-image.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:site_name" content="Chinotto" />
-    <meta property="og:url" content="https://getchinotto.app/" />
-    <meta property="og:type" content="website" />
+    <meta
+      property="og:image:alt"
+      content="Chinotto — a record left on 27 mar 2026, carried over and still unmoved."
+    />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Chinotto — personal thought that keeps going" />
-    <meta name="twitter:description" content="Capture unfinished thoughts. Pick the thread back up later — local-first, no account." />
+    <meta name="twitter:title" content="Chinotto" />
+    <meta
+      name="twitter:description"
+      content="A private record of thoughts, encounters, and what continues between them."
+    />
     <meta name="twitter:image" content="https://getchinotto.app/og-image.png" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-light-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-light-16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" media="(prefers-color-scheme: dark)" />
-    <style>
-      html, body {
-        margin: 0;
-        min-height: 100%;
-        background: #0a0a0e;
-        color: #e4e4e9;
-        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      }
 
-    </style>
+    <link rel="preload" href="/fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/geist-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/src/styles.css" />
+
+    <script>
+      document.documentElement.classList.remove("no-js");
+    </script>
+    <script type="module" src="/src/record.ts"></script>
     <script defer src="https://cloud.umami.is/script.js" data-website-id="50ebccdf-5180-47f4-8463-5e0d01969f63"></script>
   </head>
 
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div class="sheet">
+      <header class="masthead">
+        <span class="wordmark">
+          <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="3.5" />
+            <circle cx="32" cy="23" r="9" fill="currentColor" />
+            <circle cx="32" cy="40" r="5" fill="currentColor" />
+          </svg>
+          <span>chinotto</span>
+        </span>
+        <p class="stencil">PROBNAYA / CHINOTTO<br />INSTRUMENT</p>
+      </header>
+
+      <main class="record">
+        <ol class="moments" id="moments">
+          <li class="moment moment--anchor">
+            <p class="stamp">
+              <span><time datetime="2026-03-27T18:12">27 mar 2026 · 18:12</time> · carried over</span>
+            </p>
+            <p class="moment__text" lang="ru">Отдых это где ты ничего от себя не ожидаешь</p>
+          </li>
+          <li class="moment moment--carried">
+            <p class="interval"><span id="interval">2 days · 19:17 later</span></p>
+            <p class="stamp">
+              <span><time datetime="2026-03-30T13:29">30 mar 2026 · 13:29</time> · carried over</span>
+            </p>
+            <p class="moment__text">Rest is not expecting anything from yourself</p>
+          </li>
+        </ol>
+
+        <div class="elapsed">
+          <p class="elapsed__line" id="elapsed"></p>
+          <p class="continue" id="continue">
+            <button type="button" class="continue__verb" id="continue-verb">continue</button>
+            <span class="continue__hint" id="continue-hint"
+              >a new moment, dated now — these two stay where they were left</span
+            >
+          </p>
+        </div>
+
+        <div class="lede">
+          <p class="lede__claim">
+            A private record of thoughts, encounters, and what continues between them.
+          </p>
+          <p class="lede__note">
+            Nothing is filed. A moment keeps its date; continuing it adds another, dated now. What is
+            further away grows quieter, and comes back only when there is a reason to.
+          </p>
+        </div>
+      </main>
+
+      <footer class="colophon">
+        <div class="colophon__row">
+          <p class="colophon__terms">
+            Free on the Mac; on iPhone. Android is not released yet. The record is one file on your
+            device — it leaves only if you turn sync on, and then only to your own devices.
+          </p>
+          <div class="get">
+            <a class="get__item get__item--primary" href="https://github.com/probnaya-work/chinotto/releases/latest"
+              >download for mac</a
+            >
+            <a class="get__item get__item--outline" href="https://apps.apple.com/us/app/chinotto/id6761345307"
+              >iphone</a
+            >
+            <span class="get__item get__item--unreleased" aria-disabled="true"
+              >android <small>not released</small></span
+            >
+          </div>
+        </div>
+        <div class="colophon__foot">
+          <span class="colophon__pages"
+            ><a href="/manifesto">the manifesto</a> · <a href="/privacy">privacy</a></span
+          >
+          <p class="maker">AN INSTRUMENT BY <a href="https://github.com/probnaya-work">PROBNAYA</a></p>
+        </div>
+      </footer>
+    </div>
   </body>
 </html>

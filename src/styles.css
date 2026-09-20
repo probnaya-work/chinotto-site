@@ -1,0 +1,500 @@
+/* Chinotto — Direction B.
+   Palette, scale and motion come from the finalized handoff; names are ours. */
+
+@font-face {
+  font-family: 'Archivo';
+  src: url('/fonts/archivo-var-latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-stretch: 90% 100%;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/geist-mono-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Archivo carries no Cyrillic, so the Russian record falls through to this face.
+   The overrides hold Archivo's line box so the fall-through costs no layout. */
+@font-face {
+  font-family: 'Archivo Fallback';
+  src: local('Helvetica Neue'), local('Arial'), local('Roboto'), local('Segoe UI'), local('DejaVu Sans');
+  size-adjust: 101.4%;
+  ascent-override: 86.6%;
+  descent-override: 20.7%;
+  line-gap-override: 0%;
+}
+
+:root {
+  --ground: #141416;
+  --text: #d4d3ce;
+  --text-quiet: #b4b4b2;
+  --text-faint: #8f8e89;
+  --text-dim: #5f5e5a;
+  --text-bright: #fbf9f4;
+  --mark: #e6e6e3;
+  --link-quiet: #e9e7e0;
+  --maker: #c0bfba;
+  --rule: #2a2a2e;
+  --rule-interval: #3a3a40;
+  --now: #9fb79f;
+
+  --font-sans: 'Archivo', 'Archivo Fallback', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { background: var(--ground); }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--font-sans);
+}
+
+a {
+  color: var(--text-bright);
+  font-weight: 540;
+  text-decoration: none;
+}
+
+a:hover { color: #ffffff; text-decoration: underline; }
+
+::selection { background: rgba(230, 230, 227, 0.26); }
+
+:focus-visible {
+  outline: 1px solid var(--text-bright);
+  outline-offset: 3px;
+}
+
+@keyframes settle {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------------------------------------------------------------- sheet */
+
+.sheet {
+  background: var(--ground);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  /* The sheet is the query container, so its own padding measures the viewport. */
+  padding: 36px clamp(20px, 5svw, 48px) 28px clamp(20px, 10svw, 160px);
+  font-variation-settings: 'wdth' 100;
+  text-wrap: pretty;
+  container-type: inline-size;
+}
+
+/* ---------------------------------------------------------------- masthead */
+
+.masthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--mark);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.wordmark:hover { color: var(--mark); text-decoration: none; }
+
+.wordmark svg { flex: none; }
+
+.wordmark span {
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+  font-variation-settings: 'wdth' 96;
+}
+
+.stencil {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  line-height: 1.6;
+  color: var(--text-faint);
+  text-align: right;
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------- record */
+
+.record {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(56px, 9cqw, 120px) 0;
+  gap: clamp(40px, 6cqw, 72px);
+}
+
+.moments {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 4cqw, 48px);
+  max-width: 1040px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.moment {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.moment--settling { animation: settle 0.35s ease-out; }
+
+.interval {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: clamp(2px, 1cqw, 10px) 0 clamp(6px, 1cqw, 12px);
+}
+
+.interval::before {
+  content: '';
+  width: 1px;
+  height: clamp(34px, 4cqw, 52px);
+  background: var(--rule-interval);
+  flex: none;
+}
+
+.interval span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.stamp {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-faint);
+  font-variation-settings: 'wdth' 90;
+  line-height: 1;
+}
+
+.stamp .dot {
+  width: 8px;
+  height: 8px;
+  background: var(--now);
+  flex: none;
+}
+
+.moment__text {
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  margin: 0;
+  font-weight: 400;
+}
+
+.moment--anchor .moment__text {
+  font-size: clamp(34px, 6.2cqw, 84px);
+  color: var(--text);
+  font-variation-settings: 'wdth' 90;
+  max-width: 1040px;
+}
+
+.moment--carried .moment__text {
+  font-size: clamp(18px, 2.2cqw, 30px);
+  color: var(--text-quiet);
+  font-variation-settings: 'wdth' 94;
+  max-width: 520px;
+}
+
+.moment--yours .moment__text {
+  font-size: clamp(18px, 2.2cqw, 30px);
+  color: var(--text-dim);
+  font-variation-settings: 'wdth' 100;
+  max-width: 520px;
+}
+
+/* ---------------------------------------------------------------- elapsed */
+
+.elapsed {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 760px;
+}
+
+.elapsed__line {
+  font-size: clamp(19px, 2.4cqw, 28px);
+  line-height: 1.3;
+  color: var(--text-quiet);
+  font-variation-settings: 'wdth' 94;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+
+.no-js .elapsed { display: none; }
+
+.continue {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-size: 15px;
+  font-variation-settings: 'wdth' 90;
+}
+
+.continue__verb {
+  appearance: none;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-variation-settings: inherit;
+  color: var(--text-bright);
+  font-weight: 540;
+  cursor: pointer;
+  padding: 6px 0;
+}
+
+.continue__verb:hover { color: #ffffff; text-decoration: underline; }
+
+.continue__hint { color: var(--text-dim); }
+
+/* ---------------------------------------------------------------- lede */
+
+.lede {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 560px;
+}
+
+.lede p { margin: 0; }
+
+.lede__claim {
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--text);
+  font-variation-settings: 'wdth' 96;
+}
+
+.lede__note {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-faint);
+  font-variation-settings: 'wdth' 92;
+}
+
+/* ---------------------------------------------------------------- colophon */
+
+.colophon {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  border-top: 1px solid var(--rule);
+  padding-top: 22px;
+}
+
+.colophon__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px 40px;
+  flex-wrap: wrap;
+}
+
+.colophon__terms {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-quiet);
+  font-variation-settings: 'wdth' 92;
+  max-width: 460px;
+  margin: 0;
+}
+
+.get {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.get__item {
+  height: 44px;
+  padding: 0 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 540;
+}
+
+.get__item--primary {
+  background: var(--text-bright);
+  color: var(--ground);
+}
+
+.get__item--primary:hover { background: #ffffff; color: var(--ground); text-decoration: none; }
+
+.get__item--outline {
+  border: 1px solid var(--text-dim);
+  color: var(--text-bright);
+}
+
+.get__item--outline:hover { border-color: var(--text-bright); text-decoration: none; }
+
+.get__item--unreleased {
+  border: 1px solid var(--rule-interval);
+  color: var(--text-dim);
+  cursor: default;
+  font-weight: 540;
+}
+
+.get__item--unreleased small {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.colophon__foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px 24px;
+  flex-wrap: wrap;
+}
+
+.colophon__pages {
+  font-size: 12px;
+  color: var(--text-faint);
+  font-variation-settings: 'wdth' 90;
+}
+
+.colophon__pages a { color: var(--link-quiet); }
+
+.maker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  line-height: 1.6;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  text-align: right;
+}
+
+.maker a { color: var(--maker); font-weight: 400; }
+
+/* ---------------------------------------------------------------- pages */
+
+.page {
+  max-width: 640px;
+  padding: clamp(56px, 9cqw, 120px) 0;
+  flex: 1;
+}
+
+.page__title {
+  font-size: clamp(30px, 4.4cqw, 52px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  font-variation-settings: 'wdth' 92;
+  margin: 0 0 clamp(28px, 3cqw, 44px);
+  font-weight: 400;
+}
+
+.prose { font-size: 16px; line-height: 1.6; color: var(--text-faint); }
+
+.prose > * + * { margin-top: 20px; }
+
+.prose p { margin: 0; }
+
+.prose strong,
+.prose .prose__lead {
+  color: var(--text);
+  font-weight: 400;
+  font-variation-settings: 'wdth' 96;
+}
+
+.prose h2 {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: clamp(36px, 4cqw, 52px) 0 0;
+  padding-top: clamp(20px, 2cqw, 28px);
+  border-top: 1px solid var(--rule);
+}
+
+.prose h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+
+.prose ul { margin: 0; padding-left: 1.1em; }
+
+.prose li + li { margin-top: 6px; }
+
+.page__back {
+  margin-top: clamp(40px, 5cqw, 64px);
+  font-size: 14px;
+  font-variation-settings: 'wdth' 92;
+}
+
+/* ---------------------------------------------------------------- narrow */
+
+@media (max-width: 640px) {
+  .sheet { padding-left: clamp(20px, 5svw, 28px); }
+
+  /* The stencil keeps its right alignment; the colophon mark stacks left. */
+  .maker { text-align: left; }
+
+  .colophon__row,
+  .colophon__foot { align-items: flex-start; }
+
+  .colophon__foot { flex-direction: column; align-items: flex-start; }
+
+  .get { width: 100%; }
+
+  .get__item { flex: 1 1 auto; justify-content: center; }
+}
+
+/* The finalized palette puts qualifiers at #5f5e5a — 2.83:1 on the ground, below
+   AA for body text. That is the design's deliberate hierarchy, so it stays the
+   default; readers who have asked their system for more contrast get the next
+   step up the same ramp (#8f8e89, 5.61:1) rather than a colour from outside it. */
+@media (prefers-contrast: more) {
+  .continue__hint,
+  .get__item--unreleased { color: var(--text-faint); }
+
+  .get__item--unreleased { border-color: var(--text-dim); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moment--settling { animation: none; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
