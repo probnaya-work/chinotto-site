@@ -79,6 +79,21 @@ costs no layout shift. If you add copy outside Latin-1, check it in a browser.
 Sizes scale with `cqw` against `.sheet`, which is the query container. `.sheet`'s own padding uses
 `svw` because an element is not its own container.
 
+## The mark
+
+The identity defines a size ladder, and each rung is a separate drawing rather than one drawing
+scaled: **≥40px** three dots, stroke 2.5 · **24–39px** two dots, stroke 3.5 · **≤20px** one dot,
+stroke 6. The application icon is its own drawing again — the three-dot rung with the stroke taken
+to 3, at 0.62 of the tile. Picking the wrong rung is the only way to get this wrong; scaling one
+drawing to every size is what the previous icon set did.
+
+The masthead and the share card sit at 26px and 30px, so both take the two-dot rung, which is the
+mark drawn in the handoff. Favicons take the ≤20px rung at 16 and the 24–39px rung at 32, both on
+the ink field — one drawing reads on a light and a dark browser chrome, so there is no light
+variant. `scripts/icons.mjs` holds the rungs in one table; change them there, not per asset.
+
+The authority is `Chinotto - Identity.dc.html` in the design project, not this file.
+
 ## Generated assets
 
 Both are committed; regenerate them when the mark or the record changes.

@@ -1,49 +1,66 @@
 #!/usr/bin/env node
 /**
- * Rasterises the Chinotto mark — ring, upper dot, lower dot — into the icon set.
+ * Draws the Chinotto icon set from the identity size ladder.
  *
- * The mark's geometry is the one in the finalized design (64-unit space:
- * ring r28, dot r9 at cy23, dot r5 at cy40). Small sizes take the heavier
- * stroke the handoff uses for its own small mark; 64px and up take 3.5.
+ * The ladder is the asset: each rung is drawn at its own size, never scaled
+ * from another. Picking the wrong rung is the only way to get this wrong.
+ *
+ *   >= 40px   three dots, stroke 2.5
+ *   24-39px   two dots,   stroke 3.5
+ *   <= 20px   one dot,    stroke 6
+ *
+ * The application icon is its own drawing: the three-dot rung with the stroke
+ * taken to 3 so the ring holds at icon scale, occupying 0.62 of the tile.
+ *
+ * Favicons take the <=20px rung at 16 and the 24-39px rung at 32, both on the
+ * ink field, so one drawing serves a light and a dark browser chrome.
  *
  * No dependencies: PNG is encoded here, and ICO is a container around PNGs.
  *
- * Run: node scripts/icons.mjs
+ * Run: pnpm icons
  */
-import { writeFileSync } from "node:fs";
+import { writeFileSync, rmSync } from "node:fs";
 import { deflateSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "public");
 
-const LIGHT = [0xe6, 0xe6, 0xe3];
-const DARK = [0x16, 0x18, 0x1c];
-const GROUND = [0x14, 0x14, 0x16];
+const MARK = [0xe6, 0xe6, 0xe3];
+const INK = [0x14, 0x14, 0x16];
+
+/** The rungs, in the 64-unit space every drawing of the mark uses. */
+const RUNGS = {
+  three: { ring: { r: 28, stroke: 2.5 }, dots: [[23, 8], [38, 4.5], [47.5, 2.5]] },
+  two: { ring: { r: 28, stroke: 3.5 }, dots: [[23, 9], [40, 5]] },
+  one: { ring: { r: 27, stroke: 6 }, dots: [[27, 11]] },
+  // The application icon: three dots, ring taken to stroke 3.
+  app: { ring: { r: 28, stroke: 3 }, dots: [[23, 8], [38, 4.5], [47.5, 2.5]] },
+};
 
 const SS = 8; // supersampling factor
 
-/** Signed distance to a filled disc, in 64-unit space. */
-const disc = (x, y, cx, cy, r) => Math.hypot(x - cx, y - cy) - r;
-
-/** Signed distance to a ring of the given stroke width. */
-const ring = (x, y, cx, cy, r, w) => Math.abs(Math.hypot(x - cx, y - cy) - r) - w / 2;
-
-function render(size, rgb, background) {
-  const stroke = size >= 64 ? 3.5 : 6;
+/**
+ * @param size   pixel size of the square
+ * @param rung   key of RUNGS
+ * @param inset  fraction of the tile the mark occupies (1 = full bleed)
+ */
+function render(size, rung, { inset = 1 } = {}) {
+  const { ring, dots } = RUNGS[rung];
   const n = size * SS;
   const cover = new Float64Array(size * size);
 
+  // Map pixel space into the 64-unit design space, honouring the inset.
+  const span = 64 / inset;
+  const origin = (64 - span) / 2;
+
   for (let py = 0; py < n; py++) {
+    const y = origin + ((py + 0.5) / n) * span;
     for (let px = 0; px < n; px++) {
-      // sample centre, mapped into the 64-unit design space
-      const x = ((px + 0.5) / n) * 64;
-      const y = ((py + 0.5) / n) * 64;
-      const inside =
-        ring(x, y, 32, 32, 28, stroke) <= 0 ||
-        disc(x, y, 32, 23, 9) <= 0 ||
-        disc(x, y, 32, 40, 5) <= 0;
-      if (inside) cover[((py / SS) | 0) * size + ((px / SS) | 0)] += 1;
+      const x = origin + ((px + 0.5) / n) * span;
+      const onRing = Math.abs(Math.hypot(x - 32, y - 32) - ring.r) <= ring.stroke / 2;
+      const onDot = dots.some(([cy, r]) => Math.hypot(x - 32, y - cy) <= r);
+      if (onRing || onDot) cover[((py / SS) | 0) * size + ((px / SS) | 0)] += 1;
     }
   }
 
@@ -55,17 +72,10 @@ function render(size, rgb, background) {
     for (let x = 0; x < size; x++) {
       const a = cover[y * size + x] / samples;
       const i = row + 1 + x * 4;
-      if (background) {
-        raw[i] = Math.round(background[0] * (1 - a) + rgb[0] * a);
-        raw[i + 1] = Math.round(background[1] * (1 - a) + rgb[1] * a);
-        raw[i + 2] = Math.round(background[2] * (1 - a) + rgb[2] * a);
-        raw[i + 3] = 255;
-      } else {
-        raw[i] = rgb[0];
-        raw[i + 1] = rgb[1];
-        raw[i + 2] = rgb[2];
-        raw[i + 3] = Math.round(a * 255);
-      }
+      raw[i] = Math.round(INK[0] * (1 - a) + MARK[0] * a);
+      raw[i + 1] = Math.round(INK[1] * (1 - a) + MARK[1] * a);
+      raw[i + 2] = Math.round(INK[2] * (1 - a) + MARK[2] * a);
+      raw[i + 3] = 255;
     }
   }
   return png(size, raw);
@@ -131,24 +141,41 @@ function ico(entries) {
   return Buffer.concat([header, ...dir, ...entries.map((e) => e.data)]);
 }
 
+const hex = (c) => "#" + c.map((n) => n.toString(16).padStart(2, "0")).join("");
+
+/** The scalable favicon carries the same rung its raster siblings do at tab size. */
+function svg(rung) {
+  const { ring, dots } = RUNGS[rung];
+  const circles = dots
+    .map(([cy, r]) => `  <circle cx="32" cy="${cy}" r="${r}" fill="${hex(MARK)}" />`)
+    .join("\n");
+  return `<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" fill="${hex(INK)}" />
+  <circle cx="32" cy="32" r="${ring.r}" stroke="${hex(MARK)}" stroke-width="${ring.stroke}" fill="none" />
+${circles}
+</svg>
+`;
+}
+
 const write = (name, buf) => {
   writeFileSync(join(OUT, name), buf);
-  console.log(`${name}  ${buf.length} bytes`);
+  console.log(`${name.padEnd(24)} ${String(buf.length).padStart(6)} bytes`);
 };
 
-// Marks for dark browser chrome.
-write("favicon-32.png", render(32, LIGHT));
-write("favicon-16.png", render(16, LIGHT));
-// Marks for light browser chrome.
-write("favicon-light-32.png", render(32, DARK));
-write("favicon-light-16.png", render(16, DARK));
-// Home-screen icon needs an opaque ground.
-write("apple-touch-icon.png", render(180, LIGHT, GROUND));
-
+write("favicon.svg", Buffer.from(svg("one"), "utf8"));
+write("favicon-16.png", render(16, "one"));
+write("favicon-32.png", render(32, "two"));
+write("apple-touch-icon.png", render(180, "app", { inset: 0.62 }));
 write(
   "favicon.ico",
   ico([
-    { size: 16, data: render(16, LIGHT) },
-    { size: 32, data: render(32, LIGHT) },
+    { size: 16, data: render(16, "one") },
+    { size: 32, data: render(32, "two") },
   ]),
 );
+
+// The ink field carries both browser chromes, so the light pair is retired.
+for (const stale of ["favicon-light-16.png", "favicon-light-32.png"]) {
+  rmSync(join(OUT, stale), { force: true });
+  console.log(`${stale.padEnd(24)} removed`);
+}

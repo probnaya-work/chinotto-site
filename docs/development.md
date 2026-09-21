@@ -66,9 +66,14 @@ Both are committed. Regenerate when the mark or the record changes.
 pnpm icons              # favicon set + apple-touch-icon + favicon.ico
 ```
 
-`scripts/icons.mjs` rasterises the mark — ring, upper dot, lower dot — with no dependencies: it
-supersamples, encodes PNG through `node:zlib`, and wraps PNGs in an ICO container. `public/favicon.svg`
-is hand-written and carries its own `prefers-color-scheme` rule.
+`scripts/icons.mjs` draws every icon, `favicon.svg` included, with no dependencies: it supersamples,
+encodes PNG through `node:zlib`, and wraps PNGs in an ICO container.
+
+It holds the identity size ladder in one table and draws each rung rather than scaling one drawing —
+≥40px three dots stroke 2.5, 24–39px two dots stroke 3.5, ≤20px one dot stroke 6, plus the
+application icon as the three-dot rung at stroke 3 and 0.62 of the tile. So the 16px favicon is the
+one-dot rung and the 32px is the two-dot rung, both on the ink field, which is why there is no
+light-scheme variant any more.
 
 ```bash
 pnpm dev                # in one shell
