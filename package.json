@@ -1,5 +1,5 @@
 {
-  "name": "chinotto-web",
+  "name": "chinotto-site",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -9,10 +9,10 @@
   "homepage": "https://getchinotto.app",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/probnaya-work/chinotto-web.git"
+    "url": "git+https://github.com/probnaya-work/chinotto-site.git"
   },
   "bugs": {
-    "url": "https://github.com/probnaya-work/chinotto-web/issues"
+    "url": "https://github.com/probnaya-work/chinotto-site/issues"
   },
   "packageManager": "pnpm@11.24.0",
   "scripts": {
