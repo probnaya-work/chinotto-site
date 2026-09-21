@@ -1,4 +1,6 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "functions": {
     "api/**/*.ts": {
       "memory": 256,
@@ -13,17 +15,23 @@
     {
       "source": "/t/(.*)",
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     }
+  ],
+  "redirects": [
+    { "source": "/showcase", "destination": "/", "permanent": true },
+    { "source": "/faq", "destination": "/", "permanent": true },
+    { "source": "/questions", "destination": "/", "permanent": true },
+    { "source": "/changelog", "destination": "/", "permanent": true },
+    { "source": "/notes", "destination": "/", "permanent": true },
+    { "source": "/updates", "destination": "/", "permanent": true }
   ],
   "rewrites": [
     { "source": "/t/:token", "destination": "/api/t/:token" },
-    { "source": "/privacy", "destination": "/privacy/index.html" },
-    { "source": "/privacy/", "destination": "/privacy/index.html" },
-    { "source": "/manifesto", "destination": "/index.html" },
-    { "source": "/showcase", "destination": "/index.html" },
-    {
-      "source": "/((?!assets/|api/|t/|\\.well-known/|og-image\\.png|favicon\\.ico|robots\\.txt|sitemap\\.xml|apple-touch-icon\\.png|favicon-32x32\\.png|favicon-16\\.png|favicon-32\\.png|favicon-light-16\\.png|favicon-light-32\\.png|favicon\\.svg).*)",
-      "destination": "/index.html"
-    }
+    { "source": "/sync", "destination": "/" },
+    { "source": "/sync/:path*", "destination": "/" }
   ]
 }

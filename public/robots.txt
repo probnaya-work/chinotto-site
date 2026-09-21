@@ -1,2 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /t/
+
+Sitemap: https://getchinotto.app/sitemap.xml

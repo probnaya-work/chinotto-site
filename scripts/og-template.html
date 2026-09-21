@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!--
+  Source for public/og-image.png. Not a site route — it is outside the Vite
+  build inputs, so it never ships. Capture it with:
+
+    pnpm dev
+    node scripts/og.mjs
+
+  It borrows the site stylesheet so the card cannot drift from the page.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/src/styles.css" />
+    <style>
+      html, body { margin: 0; background: #141416; }
+      .card {
+        width: 1200px;
+        height: 630px;
+        box-sizing: border-box;
+        background: #141416;
+        display: flex;
+        flex-direction: column;
+        padding: 64px 64px 56px 88px;
+        font-family: var(--font-sans);
+        font-variation-settings: "wdth" 100;
+        overflow: hidden;
+      }
+      .card__record { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+      .card__anchor {
+        font-size: 62px;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        color: var(--text);
+        font-variation-settings: "wdth" 90;
+        max-width: 960px;
+        margin: 0;
+      }
+      .card__foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
+      .card__claim {
+        font-size: 19px;
+        line-height: 1.4;
+        color: var(--text-quiet);
+        font-variation-settings: "wdth" 94;
+        max-width: 620px;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <header class="masthead">
+        <span class="wordmark">
+          <svg width="30" height="30" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="3.5" />
+            <circle cx="32" cy="23" r="9" fill="currentColor" />
+            <circle cx="32" cy="40" r="5" fill="currentColor" />
+          </svg>
+          <span>chinotto</span>
+        </span>
+        <p class="stencil">PROBNAYA / CHINOTTO<br />INSTRUMENT</p>
+      </header>
+
+      <div class="card__record">
+        <p class="stamp"><span>27 mar 2026 · 18:12 · carried over</span></p>
+        <p class="card__anchor" lang="ru">Отдых это где ты ничего от себя не ожидаешь</p>
+      </div>
+
+      <div class="card__foot">
+        <p class="card__claim">
+          A private record of thoughts, encounters, and what continues between them.
+        </p>
+        <p class="maker">AN INSTRUMENT BY PROBNAYA</p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,9 +1,5 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g transform="translate(32 32) scale(1.1) translate(-32 -32)">
-    <circle cx="32" cy="32" r="28" stroke="#6e7392" stroke-width="2" fill="none"/>
-    <circle cx="32" cy="20" r="6" fill="#6e7392"/>
-    <circle cx="22" cy="34" r="5" fill="#6e7392"/>
-    <circle cx="42" cy="34" r="5" fill="#6e7392"/>
-    <circle cx="32" cy="44" r="4" fill="#6e7392"/>
-  </g>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" fill="#141416" />
+  <circle cx="32" cy="32" r="27" stroke="#e6e6e3" stroke-width="6" fill="none" />
+  <circle cx="32" cy="27" r="11" fill="#e6e6e3" />
 </svg>
