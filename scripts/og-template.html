@@ -26,25 +26,18 @@
         font-variation-settings: "wdth" 100;
         overflow: hidden;
       }
-      .card__record { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
-      .card__anchor {
-        font-size: 62px;
-        line-height: 1.1;
+      .card__record { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+      .card__claim {
+        font-size: 52px;
+        line-height: 1.2;
         letter-spacing: -0.02em;
         color: var(--text);
-        font-variation-settings: "wdth" 90;
-        max-width: 960px;
+        font-variation-settings: "wdth" 92;
+        max-width: 920px;
         margin: 0;
       }
-      .card__foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
-      .card__claim {
-        font-size: 19px;
-        line-height: 1.4;
-        color: var(--text-quiet);
-        font-variation-settings: "wdth" 94;
-        max-width: 620px;
-        margin: 0;
-      }
+      .card__foot { display: flex; justify-content: flex-start; }
+      .maker { font-size: 18px; }
     </style>
   </head>
   <body>
@@ -58,18 +51,15 @@
           </svg>
           <span>chinotto</span>
         </span>
-        <p class="stencil">PROBNAYA / CHINOTTO<br />INSTRUMENT</p>
       </header>
 
       <div class="card__record">
-        <p class="stamp"><span>27 mar 2026 · 18:12 · carried over</span></p>
-        <p class="card__anchor" lang="ru">Отдых это где ты ничего от себя не ожидаешь</p>
-      </div>
-
-      <div class="card__foot">
         <p class="card__claim">
           A private record of thoughts, encounters, and what continues between them.
         </p>
+      </div>
+
+      <div class="card__foot">
         <p class="maker">AN INSTRUMENT BY PROBNAYA</p>
       </div>
     </div>
