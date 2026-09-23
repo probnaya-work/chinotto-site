@@ -9,6 +9,7 @@ export default defineConfig({
         index: "index.html",
         manifesto: "manifesto.html",
         privacy: "privacy.html",
+        support: "support.html",
         notFound: "404.html",
       },
     },
