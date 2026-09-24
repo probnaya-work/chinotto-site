@@ -77,9 +77,19 @@
 
           <h2>Voice and transcription</h2>
           <p>
-            Voice recordings you capture, on Mac or iOS, stay on your device. Transcription
-            happens on-device. The recording itself is never sent anywhere, even when sync is
-            on — only the transcribed text syncs, the same as any other entry.
+            On iPhone and Mac, Chinotto uses Apple's speech recognition to turn a recording into
+            text. Recognition runs on your device when your device supports it for the language
+            you speak. When it does not, the versions of Chinotto available today may use Apple's
+            speech recognition service instead.
+          </p>
+          <p>
+            The recording itself is kept in Chinotto's app data on your device. It is not part of
+            sync — only the transcribed text syncs, the same as any other entry. Backups your
+            device makes, such as iCloud Backup or Time Machine, may include this app data.
+          </p>
+          <p>
+            In the versions available today, removing an entry may leave its recording in
+            Chinotto's app data on that device until the app's data is removed.
           </p>
 
           <h2>Data collection</h2>
@@ -113,6 +123,10 @@
             You can delete your cloud account and synced data from within either app. This removes
             the copy of your record held in the cloud; the record on your own devices is untouched.
           </p>
+          <p>
+            When sync is on, removing an entry marks it as removed in the synced copy; its text
+            stays there until you delete your cloud account.
+          </p>
 
           <h2>Sharing a thread</h2>
           <p>
@@ -126,8 +140,10 @@
             We use Umami for anonymous, opt-in product analytics; it does not receive your entry
             content and is not used for advertising or tracking. We do not use Firebase Analytics.
             Sign-in and sync run on Firebase; on iOS, Apple and our subscription provider process
-            your purchase and subscription status. None of these services receive your thought
-            content beyond what sync itself requires.
+            your purchase and subscription status. Voice transcription uses Apple Speech, part of
+            iOS and macOS; when it uses Apple's speech recognition service, Apple processes that
+            audio under Apple's own privacy policy. Apart from that, none of these services
+            receive your thought content beyond what sync itself requires.
           </p>
 
           <h2>Contact</h2>
