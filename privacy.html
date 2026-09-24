@@ -62,6 +62,7 @@
         <h1 class="page__title">privacy</h1>
         <div class="prose">
           <h2>Privacy Policy</h2>
+          <p>Last updated: 24 September 2026.</p>
           <p>
             This Privacy Policy covers Chinotto for Mac and Chinotto for iOS. Both are local-first
             applications: by default, your thoughts are stored on your device and are not collected
@@ -77,10 +78,18 @@
 
           <h2>Voice and transcription</h2>
           <p>
-            On iPhone and Mac, Chinotto uses Apple's speech recognition to turn a recording into
-            text. Recognition runs on your device when your device supports it for the language
-            you speak. When it does not, the versions of Chinotto available today may use Apple's
-            speech recognition service instead.
+            In Chinotto for iOS 2.0.1 and later, transcription runs only on your iPhone. Chinotto
+            uses Apple's speech recognition with on-device recognition required. If your iPhone
+            can't recognise the language you speak on the device, or speech recognition isn't
+            allowed, the recording stays on your iPhone without words, and Chinotto tries again on
+            the iPhone later if on-device recognition becomes available. Your recordings are never
+            sent to Apple or to any other transcription server.
+          </p>
+          <p>
+            Chinotto for iOS versions earlier than 2.0.1, and the direct-download Chinotto for Mac
+            released so far (up to version 3.0.0), recognise speech on your device when your device
+            supports the language you speak, and may otherwise use Apple's speech recognition
+            service, which then receives that audio.
           </p>
           <p>
             The recording itself is kept in Chinotto's app data on your device. It is not part of
@@ -88,8 +97,11 @@
             device makes, such as iCloud Backup or Time Machine, may include this app data.
           </p>
           <p>
-            In the versions available today, removing an entry may leave its recording in
-            Chinotto's app data on that device until the app's data is removed.
+            In Chinotto for iOS 2.0.1 and later, when you remove a voice entry you have 8 seconds
+            to bring it back; after that, its recording and its transcript are deleted from your
+            iPhone. In the earlier versions named above, removing an entry may leave its recording
+            in Chinotto's app data on that device until the app's data is removed. For the synced
+            copy of an entry, see Deleting your data below.
           </p>
 
           <h2>Data collection</h2>
@@ -141,9 +153,11 @@
             content and is not used for advertising or tracking. We do not use Firebase Analytics.
             Sign-in and sync run on Firebase; on iOS, Apple and our subscription provider process
             your purchase and subscription status. Voice transcription uses Apple Speech, part of
-            iOS and macOS; when it uses Apple's speech recognition service, Apple processes that
-            audio under Apple's own privacy policy. Apart from that, none of these services
-            receive your thought content beyond what sync itself requires.
+            iOS and macOS. In Chinotto for iOS 2.0.1 and later it runs only on your iPhone, and no
+            audio reaches Apple. In the earlier versions named under Voice and transcription, when
+            it uses Apple's speech recognition service, Apple processes that audio under Apple's
+            own privacy policy. Apart from that, none of these services receive your thought
+            content beyond what sync itself requires.
           </p>
 
           <h2>Contact</h2>
