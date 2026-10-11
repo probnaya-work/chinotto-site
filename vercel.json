@@ -1,4 +1,9 @@
 {
+  "git": {
+    "deploymentEnabled": {
+      "fix/probnaya-return-navigation": false
+    }
+  },
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
