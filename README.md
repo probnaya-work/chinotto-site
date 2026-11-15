@@ -9,9 +9,9 @@ A private record of thoughts, encounters, and what continues between them.
 
 Chinotto web is the public website for Chinotto at [getchinotto.app](https://getchinotto.app).
 
-The same deployment carries two surfaces the apps depend on: the share read URLs
-the desktop app publishes at `/t/{token}`, and `/sync`, the universal link the
-desktop app renders as a QR code when pairing with mobile.
+The same deployment serves `/sync`, the universal link used to pair Mac and iPhone.
+It also keeps `/t/{token}` and its API for snapshots published by earlier desktop versions.
+The current Record does not create public share links.
 
 **Stack:** Vite · plain HTML and CSS · one TypeScript module. No framework, no
 runtime dependencies, no CMS.
@@ -35,7 +35,7 @@ pnpm test:share
 ## Documentation
 
 - [Development](docs/development.md) — routes, fonts, generated assets, what must not break
-- [Share hosting](docs/share-hosting.md) — the `/t/{token}` API on `getchinotto.app`
+- [Legacy snapshot hosting](docs/share-hosting.md) — compatibility for earlier `/t/{token}` links
 - [Commit convention](docs/commit-convention.md)
 - [AGENTS.md](AGENTS.md) — working context for coding agents
 

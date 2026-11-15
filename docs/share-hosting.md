@@ -1,6 +1,9 @@
-# Share hosting (`getchinotto.app`)
+# Legacy snapshot hosting (`getchinotto.app`)
 
-Private thread read URLs for the Chinotto desktop app. Vercel serverless routes in this repo on the same project as the marketing site.
+Compatibility routes for snapshots published by earlier Chinotto desktop versions. The current
+Record does not create public share links. Anyone with an unexpired link can read its snapshot;
+these are not authenticated private Records. The Vercel routes remain alongside the product site
+so earlier links keep resolving.
 
 Contract matches `chinotto-app` → `docs/internal/sharing.md` (Slice 2).
 

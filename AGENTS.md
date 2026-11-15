@@ -43,8 +43,9 @@ There is no framework, no client router, no runtime dependency and no build-time
 
 These break production if changed carelessly. Verify before touching them.
 
-- **`/t/{token}` must keep resolving.** The desktop app publishes share snapshots to
-  `POST /api/threads` and hands people `getchinotto.app/t/{token}`. Live links already exist. See
+- **`/t/{token}` must keep resolving.** Earlier desktop versions published snapshots through
+  `POST /api/threads` at `getchinotto.app/t/{token}`. The current Record does not create them;
+  existing links still need to resolve. See
   [`docs/share-hosting.md`](docs/share-hosting.md).
 - **`/sync` must return 200.** The desktop app renders `https://getchinotto.app/sync?ds=<uuid>` as a
   pairing QR code. On iOS the universal link opens the app; everyone else lands on this site, so the
